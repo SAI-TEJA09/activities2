@@ -1,0 +1,445 @@
+=<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy New Year 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap');
+
+        :root {
+            --bg-dark: #0a0a1a;
+            --bg-light: #fdf6e3;
+            --accent-gold: #d4af37;
+            --accent-red: #c0392b;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-dark);
+            color: white;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+            opacity: 0;
+            pointer-events: none;
+            overflow-y: auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .screen.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Particles Background */
+        #canvas-stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        /* Typography */
+        .title-gold {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-gold);
+            letter-spacing: 4px;
+        }
+
+        .script-font {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* Button Styles */
+        .btn-custom {
+            padding: 12px 30px;
+            border: 2px solid white;
+            border-radius: 50px;
+            background: transparent;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .btn-custom:hover {
+            background: white;
+            color: black;
+        }
+
+        .btn-red {
+            background: var(--accent-red);
+            border-color: var(--accent-red);
+        }
+
+        /* Landing Screen */
+        #landing-screen h1 { font-size: 4rem; }
+
+        /* Checklist Styles */
+        .checklist-item {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            width: 100%;
+            max-width: 400px;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--accent-red);
+            margin-right: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkbox.checked::after {
+            content: '✓';
+            color: var(--accent-red);
+            font-weight: bold;
+        }
+
+        /* Cassette Card */
+        .cassette {
+            background: #222;
+            width: 320px;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 15px 0;
+            border: 4px solid #444;
+            position: relative;
+        }
+        
+        .cassette-label {
+            background: #fff;
+            color: #000;
+            height: 100px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            font-size: 0.7rem;
+        }
+
+        /* Sticky Notes */
+        .sticky-note {
+            width: 250px;
+            height: 250px;
+            padding: 20px;
+            margin: 10px;
+            box-shadow: 5px 5px 10px rgba(0,0,0,0.1);
+            transform: rotate(-2deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #333;
+            transition: transform 0.5s;
+            cursor: pointer;
+        }
+        
+        .sticky-note:nth-child(even) { transform: rotate(3deg); }
+        .sticky-note:hover { transform: scale(1.05) rotate(0deg); z-index: 10; }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 80%;
+            height: 10px;
+            background: #333;
+            border-radius: 5px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--accent-gold);
+            transition: width 0.1s linear;
+        }
+
+        /* Cat Images (Using Placeholder Emojis/SVG for UI stability) */
+        .cat-avatar {
+            width: 80px;
+            height: 80px;
+            background: #eee;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            border: 3px solid var(--accent-gold);
+        }
+
+        /* Transitions */
+        .fade-in { animation: fadeIn 1.5s forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Layout for white screens */
+        .light-screen {
+            background-color: var(--bg-light);
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas-stars"></canvas>
+
+    <!-- 1. LANDING SCREEN -->
+    <div id="landing-screen" class="screen active">
+        <p class="tracking-widest opacity-70 mb-4">HAPPY NEW YEAR!</p>
+        <h1 class="title-gold">2026</h1>
+        <div class="cat-avatar">🐱</div>
+        <p class="script-font text-2xl mt-6">See what I made for you</p>
+        <button class="btn-custom" onclick="nextScreen('intro-screen')">STARTING THE JOURNEY</button>
+    </div>
+
+    <!-- 2. INTRO MESSAGE -->
+    <div id="intro-screen" class="screen light-screen">
+        <div class="cat-avatar" style="position: absolute; top: 50px; left: 50px;">🎅</div>
+        <div class="max-w-md text-center">
+            <h2 class="title-gold text-3xl mb-4 text-red-700">HAPPY NEW YEAR TO YOU!</h2>
+            <p class="mb-8">Thanks for being part of my 2025, now let's make 2026 even better!</p>
+            <div class="p-8 border-4 border-red-500 rounded-xl relative">
+                <span class="text-6xl">🔥</span>
+                <p class="font-bold mt-4">GREETINGS</p>
+                <p class="text-sm opacity-70">Continue to see more surprises!</p>
+            </div>
+            <p class="mt-4 text-xs italic">MADE WITH CARE ✨</p>
+            <button class="btn-custom text-black border-black hover:bg-black hover:text-white" onclick="nextScreen('bucket-list-screen')">GREETINGS →</button>
+        </div>
+    </div>
+
+    <!-- 3. BUCKET LIST -->
+    <div id="bucket-list-screen" class="screen light-screen">
+        <h2 class="script-font text-4xl mb-2">Goals for 2026</h2>
+        <p class="title-gold text-xl mb-6">Bucket List</p>
+        
+        <div class="checklist-item">
+            <div class="checkbox" onclick="toggleCheck(this)"></div>
+            <span>🌎 Visit a place you've always wanted to see</span>
+        </div>
+        <div class="checklist-item">
+            <div class="checkbox" onclick="toggleCheck(this)"></div>
+            <span>📚 Learn or read more consistently</span>
+        </div>
+        <div class="checklist-item">
+            <div class="checkbox" onclick="toggleCheck(this)"></div>
+            <span>🧘 Take better care of your mind and body</span>
+        </div>
+        <div class="checklist-item">
+            <div class="checkbox" onclick="toggleCheck(this)"></div>
+            <span>❤️ Spend quality time with people who matter</span>
+        </div>
+
+        <p class="mt-8 text-sm italic">Ready to step into 2026?</p>
+        <button class="btn-custom btn-red" onclick="nextScreen('music-screen')">LET'S GO! →</button>
+    </div>
+
+    <!-- 4. MUSIC/VIBES -->
+    <div id="music-screen" class="screen light-screen">
+        <p class="text-red-500 font-bold">Dedicated To You</p>
+        <h2 class="title-gold text-2xl mb-6">Songs That Match Your Vibes 🎶</h2>
+        
+        <div class="cassette">
+            <div class="cassette-label">
+                <div class="text-3xl mr-4">📀</div>
+                <div>
+                    <p class="font-bold text-red-600">O My Friend </p>
+                    <p class="text-xs">GOOD VIBES ONLY • SIDE A</p>
+                </div>
+            </div>
+            <div class="flex justify-between mt-4 text-white text-[10px]">
+                <span>● PLAYING 0:01</span>
+                <span>Type II / CRO2</span>
+            </div>
+        </div>
+
+        <div class="cassette">
+            <div class="cassette-label">
+                <div class="text-3xl mr-4">😺</div>
+                <div>
+                    <p class="font-bold text-red-600">Singari</p>
+                    <p class="text-xs">SOME MOMENTS JUST FEEL RIGHT</p>
+                </div>
+            </div>
+            <div class="flex justify-between mt-4 text-white text-[10px]">
+                <span>● PLAYING 0:00</span>
+                <span>Type II / CRO2</span>
+            </div>
+        </div>
+
+        <button class="btn-custom text-black border-black mt-8" onclick="nextScreen('notes-screen')">KEEP GOING →</button>
+    </div>
+
+    <!-- 5. STICKY NOTES -->
+    <div id="notes-screen" class="screen light-screen">
+        <h2 class="title-gold text-2xl mb-4">A Few Things I Want To Say To You ✨</h2>
+        <p class="text-xs mb-6 italic">Tap to flip 🪄</p>
+
+        <div class="flex flex-wrap justify-center">
+            <div class="sticky-note bg-pink-200">
+                <p class="script-font text-xl">Life feels better with you in it 🤍</p>
+            </div>
+            <div class="sticky-note bg-yellow-100">
+                <p class="script-font text-xl">I’m truly grateful to have you as my best friend 💗</p>
+            </div>
+            <div class="sticky-note bg-blue-100">
+                <p class="script-font text-xl">Thank you for always being there for me 😄</p>
+            </div>
+        </div>
+
+        <button class="btn-custom text-black border-black mt-12" onclick="nextScreen('loading-screen')">NEXT STEP →</button>
+    </div>
+
+    <!-- 6. LOADING -->
+    <div id="loading-screen" class="screen light-screen">
+        <div class="cat-avatar">😻</div>
+        <p id="loading-text" class="mt-4 font-bold">closing 2025 on a good note...</p>
+        <div class="progress-container">
+            <div id="bar" class="progress-bar"></div>
+        </div>
+        <p id="loading-percent" class="mt-2 text-xs">PREPARING SOMETHING FOR 2026: 0%</p>
+    </div>
+
+    <!-- 7. ONE LAST NOTE -->
+    <div id="final-note-screen" class="screen light-screen">
+        <div class="cat-avatar" style="width: 150px; height: 150px; font-size: 4rem;">🐱</div>
+        <div class="max-w-sm text-center">
+            <h2 class="script-font text-3xl italic text-yellow-600">Hey dear pandi,</h2>
+            <h1 class="title-gold text-2xl mb-6">One Last Note</h1>
+            <p class="italic text-gray-700 leading-relaxed">
+                As the new year begins, I just wanted to share a few good thoughts with you. 
+                I hope the coming year brings you peace, growth, and many small wins.
+            </p>
+            <button class="btn-custom bg-black text-white px-10 mt-10" onclick="nextScreen('sealed-screen')">SEAL IT ✉️ 🔒</button>
+        </div>
+    </div>
+
+    <!-- 8. SEALED -->
+    <div id="sealed-screen" class="screen light-screen">
+        <h2 class="title-gold text-4xl mb-4">Sealed ✉️</h2>
+        <div class="p-12 border-4 border-dashed border-yellow-500 rounded-3xl bg-white shadow-2xl">
+            <p class="script-font text-2xl text-yellow-700">May this year bring you endless happiness, good health, success, and beautiful moments. Thank you for being my constant support, my laughter, and my safe place. I’m so grateful to have you in my life. Let’s make more memories together this year 🤍💫
+Cheers to us and an amazing 2026! 🎆🥰</p>
+        </div>
+        <button class="btn-custom text-black border-black mt-12" onclick="location.reload()">RESTART THE JOURNEY</button>
+    </div>
+
+
+    <script>
+        // --- STAR BACKGROUND LOGIC ---
+        const canvas = document.getElementById('canvas-stars');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+
+        function initStars() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            stars = [];
+            for (let i = 0; i < 150; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2,
+                    speed: Math.random() * 0.5 + 0.1,
+                    opacity: Math.random()
+                });
+            }
+        }
+
+        function drawStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "white";
+            stars.forEach(star => {
+                ctx.globalAlpha = star.opacity;
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                star.y += star.speed;
+                if (star.y > canvas.height) star.y = 0;
+            });
+            requestAnimationFrame(drawStars);
+        }
+
+        window.onload = () => {
+            initStars();
+            drawStars();
+        };
+
+        window.onresize = initStars;
+
+        // --- NAVIGATION LOGIC ---
+        function nextScreen(screenId) {
+            // Hide all
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            
+            const next = document.getElementById(screenId);
+            next.classList.add('active');
+
+            if (screenId === 'loading-screen') {
+                runLoading();
+            }
+        }
+
+        function toggleCheck(el) {
+            el.classList.toggle('checked');
+        }
+
+        function runLoading() {
+            const bar = document.getElementById('bar');
+            const percentText = document.getElementById('loading-percent');
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 1;
+                bar.style.width = progress + '%';
+                percentText.innerText = `PREPARING SOMETHING FOR 2026: ${progress}%`;
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        nextScreen('final-note-screen');
+                    }, 500);
+                }
+            }, 30);
+        }
+
+        // Custom cursor or simple interactions
+        document.addEventListener('mousemove', (e) => {
+            // Optional: light follows mouse
+        });
+
+    </script>
+</body>
+</html>
